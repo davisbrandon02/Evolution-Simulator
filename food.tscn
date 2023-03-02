@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://b7gqrooqwsi45"]
+
+[ext_resource type="Texture2D" uid="uid://dik1t87r0t1i3" path="res://assets/circle.png" id="1_hd36v"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5bp0y"]
+radius = 64.0
+
+[node name="Food" type="StaticBody2D" groups=["food"]]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_5bp0y")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.196078, 0.631373, 0.301961, 1)
+texture = ExtResource("1_hd36v")
