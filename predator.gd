@@ -1,12 +1,11 @@
-class_name Prey
+class_name Predator
 extends CharacterBody2D
 
-var speed = 400
-var turnStrength = .035
-var visionCone = 180
+var speed = 450
+var turnStrength = .04
 var dirTolerance: float = 20
 
-var maxHunger: int = 4000
+var maxHunger: int = 12000
 var hunger: int = maxHunger / 2
 
 # Wander
@@ -15,8 +14,7 @@ var wanderDirChangeTime: float = 3
 
 enum STATE {
 	WANDER,
-	FORAGE,
-	FLEE
+	CHASE
 }
 var state: STATE = STATE.WANDER
 
@@ -49,7 +47,7 @@ func _physics_process(delta):
 				if rotation_degrees > rightBoundary:	
 					rotate(-turnStrength)
 		
-		STATE.FORAGE:
+		STATE.CHASE:
 			$WanderTimer.stop()
 			
 			var nearestFood = null
@@ -58,11 +56,8 @@ func _physics_process(delta):
 			for food in foods:
 				if food == self:
 					continue
-				if food.is_in_group('prey'):
-					continue
 				if food.is_in_group('predator'):
-					state = STATE.FLEE
-					return
+					continue
 				if nearestFood == null or position.distance_to(food.position) < position.distance_to(nearestFood.position):
 					nearestFood = food
 			
@@ -77,45 +72,6 @@ func _physics_process(delta):
 			var angleToFood = rad_to_deg(foodDir.angle())
 			var leftBoundary = angleToFood - dirTolerance / 2
 			var rightBoundary = angleToFood + dirTolerance / 2
-			
-			if (rotation_degrees > leftBoundary and rotation_degrees < rightBoundary):
-				pass
-			else:
-				if rotation_degrees < leftBoundary:
-					rotate(turnStrength * settings.simulationSpeed)
-				if rotation_degrees > rightBoundary:	
-					rotate(-turnStrength * settings.simulationSpeed)
-		
-		STATE.FLEE:
-			$WanderTimer.stop()
-			
-			var nearestPred = null
-			
-			var bodies = $SightArea.get_overlapping_bodies()
-			for body in bodies:
-				if body == self:
-					continue
-				if body.is_in_group('prey') or body.is_in_group('food'):
-					continue
-				if nearestPred == null or position.distance_to(body.position) < position.distance_to(nearestPred.position):
-					nearestPred = body
-			
-			if nearestPred == null:
-				state = STATE.WANDER
-				return
-			
-			var fp = nearestPred.position
-			var p = position
-			var predDir = (nearestPred.position - position).normalized()
-			
-			var angleToPred = rad_to_deg(predDir.angle())
-			var angleFromPred = angleToPred
-			if angleToPred < 0:
-				angleFromPred = angleToPred + 180
-			else:
-				angleFromPred = angleToPred - 180
-			var leftBoundary = angleFromPred - dirTolerance / 2
-			var rightBoundary = angleFromPred + dirTolerance / 2
 			
 			if (rotation_degrees > leftBoundary and rotation_degrees < rightBoundary):
 				pass
@@ -142,22 +98,21 @@ func _on_wander_timer_timeout():
 	desiredDir = Vector2(randf_range(-1,1), randf_range(-1,1))
 
 func _on_sight_area_body_entered(body):
-	if body.is_in_group('predator'):
-		state = STATE.FLEE
-	
-	if body.is_in_group('food'):
+	if body.is_in_group('prey'):
 		if state == STATE.WANDER:
-			state = STATE.FORAGE
+			state = STATE.CHASE
 
 func eat(food):
-	food.queue_free()
-	hunger += settings.foodAmount
-	if hunger >= maxHunger:
-		hunger = maxHunger / 2
-		split()
+	if food.is_in_group('prey'):
+		var amt = food.hunger
+		food.queue_free()
+		hunger += amt
+		if hunger >= maxHunger:
+			hunger = maxHunger / 2
+			split()
 
-var preyNode = preload("res://prey.tscn")
+var predatorNode = preload("res://predator.tscn")
 func split():
-	var preyInstance = preyNode.instantiate()
-	preyInstance.position = position
-	get_parent().add_child(preyInstance)
+	var predatorInstance = predatorNode.instantiate()
+	predatorInstance.position = position
+	get_parent().add_child(predatorInstance)

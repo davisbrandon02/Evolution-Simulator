@@ -10,7 +10,9 @@ script = ExtResource("1_jag5g")
 offset_right = 10000.0
 offset_bottom = 10000.0
 
-[node name="Creatures" type="Node2D" parent="."]
+[node name="Prey" type="Node2D" parent="."]
+
+[node name="Predator" type="Node2D" parent="."]
 
 [node name="Food" type="Node2D" parent="."]
 
@@ -33,6 +35,22 @@ scale = Vector2(24, 24)
 text = "Prey:"
 
 [node name="PreySlider" type="HSlider" parent="PreyLabel"]
+layout_mode = 0
+offset_left = 111.0
+offset_top = 5.0
+offset_right = 394.0
+offset_bottom = 21.0
+editable = false
+
+[node name="PredatorLabel" type="Label" parent="."]
+offset_left = 181.0
+offset_top = -1813.0
+offset_right = 221.0
+offset_bottom = -1787.0
+scale = Vector2(24, 24)
+text = "Predator:"
+
+[node name="PredatorSlider" type="HSlider" parent="PredatorLabel"]
 layout_mode = 0
 offset_left = 111.0
 offset_top = 5.0

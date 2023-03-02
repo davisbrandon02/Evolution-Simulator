@@ -7,26 +7,43 @@ func _ready():
 	$PreyLabel/PreySlider.max_value = settings.maxPrey
 	$FoodLabel/FoodSlider.max_value = settings.maxFood
 	
+	for i in settings.initialFood:
+		spawnFood(Vector2(randf_range(0, settings.size.x), randf_range(0, settings.size.y)))
+	
 	for i in settings.initialPrey:
-		spawnCreature(Vector2(randf_range(0, settings.size.x), randf_range(0, settings.size.y)))
+		spawnPrey(Vector2(randf_range(0, settings.size.x), randf_range(0, settings.size.y)))
+	
+	for i in settings.initialPredators:
+		spawnPredator(Vector2(randf_range(0, settings.size.x), randf_range(0, settings.size.y)))
+
+func _on_food_timer_timeout():
+	spawnFood(Vector2(randf_range(0, settings.size.x), randf_range(0, settings.size.y)))
 
 var foodNode = preload("res://food.tscn")
-func _on_food_timer_timeout():
+func spawnFood(location: Vector2):
 	if $Food.get_child_count() < settings.maxFood:
 		var foodInstance = foodNode.instantiate()
-		var randPos = Vector2(randf_range(0, settings.size.x), randf_range(0, settings.size.y))
-		foodInstance.position = randPos
+		foodInstance.position = location
 		$Food.add_child(foodInstance)
 
 var preyNode = preload("res://prey.tscn")
-func spawnCreature(location: Vector2):
+func spawnPrey(location: Vector2):
 	var newPrey = preyNode.instantiate()
 	newPrey.position = location
-	$Creatures.add_child(newPrey)
+	$Prey.add_child(newPrey)
+	
+var predNode = preload("res://predator.tscn")
+func spawnPredator(location: Vector2):
+	var newPred = predNode.instantiate()
+	newPred.position = location
+	$Predator.add_child(newPred)
 
 func _process(delta):
-	var preyCount = $Creatures.get_child_count()
+	var preyCount = $Prey.get_child_count()
+	var predCount = $Predator.get_child_count()
 	var foodCount = $Food.get_child_count()
+	$PredatorLabel.text = 'Predator: %s' % predCount
+	$PredatorLabel/PredatorSlider.value = predCount
 	$PreyLabel.text = 'Prey: %s' % preyCount
 	$PreyLabel/PreySlider.value = preyCount
 	$FoodLabel.text = 'Food: %s' % foodCount

@@ -1,23 +1,23 @@
-[gd_scene load_steps=6 format=3 uid="uid://do14aow5vx7xn"]
+[gd_scene load_steps=6 format=3 uid="uid://cv682qbb7bnj8"]
 
-[ext_resource type="Script" path="res://prey.gd" id="1_qkxoo"]
-[ext_resource type="Texture2D" uid="uid://dgym7a6mcxemj" path="res://assets/triangle.png" id="2_1vbnk"]
-[ext_resource type="Texture2D" uid="uid://dik1t87r0t1i3" path="res://assets/circle.png" id="3_40pcw"]
+[ext_resource type="Script" path="res://predator.gd" id="1_tg0di"]
+[ext_resource type="Texture2D" uid="uid://dgym7a6mcxemj" path="res://assets/triangle.png" id="2_w5ucs"]
+[ext_resource type="Texture2D" uid="uid://dik1t87r0t1i3" path="res://assets/circle.png" id="3_gk2j2"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_exqvs"]
-radius = 1262.0
-height = 2524.0
+radius = 1568.0
+height = 7556.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d4fok"]
 radius = 46.1736
 
-[node name="Prey" type="CharacterBody2D" groups=["prey"]]
-script = ExtResource("1_qkxoo")
+[node name="Predator" type="CharacterBody2D" groups=["predator"]]
+script = ExtResource("1_tg0di")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.403922, 0.47451, 1, 1)
+modulate = Color(0.8, 0.0784314, 0.192157, 1)
 rotation = 1.5708
-texture = ExtResource("2_1vbnk")
+texture = ExtResource("2_w5ucs")
 
 [node name="Forward" type="Node2D" parent="."]
 position = Vector2(95, 1)
@@ -26,13 +26,12 @@ position = Vector2(95, 1)
 visible = false
 modulate = Color(0.403922, 0.47451, 1, 1)
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("3_40pcw")
+texture = ExtResource("3_gk2j2")
 
 [node name="SightArea" type="Area2D" parent="."]
-collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SightArea"]
-position = Vector2(381, 0)
+position = Vector2(2991, 0)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_exqvs")
 
@@ -45,7 +44,6 @@ polygon = PackedVector2Array(-63, 63, 63, 0, -63, -63)
 [node name="EatArea" type="Area2D" parent="."]
 position = Vector2(34, 0)
 collision_layer = 0
-collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EatArea"]
 shape = SubResource("CircleShape2D_d4fok")
